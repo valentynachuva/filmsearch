@@ -2,19 +2,20 @@
 
 
 namespace App\Repository;
-
-
-use App\films;
+use \App\Films;
 
 interface FilmRepositoryInterface
 {
-    /**Ищет фильм по заголовку в БД
+    /**
+     * Ищет фильм по заголовку в БД
+     *
      * @param string $title
      * @return Films|null
      */
-    public function findFilmByTitle(string $title): ?films;
-
-    /**добавляет фильм в БД
+    public function findFilmByTitle(string $title): ?Films;
+    /**
+     * Добавляет фильм в БД
+     *
      * @param array $data
      * @return int
      */

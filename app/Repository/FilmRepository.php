@@ -5,30 +5,51 @@ namespace App\Repository;
 
 
 
-use App\films;
+use App\Films;
 
 class FilmRepository implements FilmRepositoryInterface
 
 {
     /**
-     * 
      * @var Films
      */
     private $model;
     public function __construct()
     {
-        $this->model = app(\App\films::class);
+        $this->model = app(Films::class);
     }
-            
-    public function findFilmByTitle(string $title): ?films
+    /**
+     * @param string $title
+     * @return Films|null
+     */
+    public function findFilmByTitle(string $title): ?Films
     {
-        $film= $this->model->whereLike('title',$title)->first();
+        $film = $this->model->where('title', 'like', "%$title%")->first();
         return $film;
     }
-
-    public function addFilm(array $data): int
+    /**
+     * @param array $data
+     * @return array
+     */
+    public function addFilm(array $data): array
     {
-        // TODO: Implement addFilm() method.
+        ///$data = $this->toDbArray($data);
+        $this->model->create($data);
+        return $data;
     }
+    private function toDbArray(array $apiResponse): array
+    {
+        return [
+            'title' => $apiResponse['Title'],
+            'year' => $apiResponse['Year'],
+            'director' => $apiResponse['Director'],
+            'plot' => $apiResponse['Plot'],
+            'poster' => $apiResponse['Poster'],
+            'imdb_id' => $apiResponse['imdbID'],
+            'production' => $apiResponse['Production'],
+            'website' => $apiResponse['Website']
+        ];
+    }
+
 
 }

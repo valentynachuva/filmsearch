@@ -18,19 +18,29 @@ class FilmController extends Controller
 
     public function search(Request $request)
     {
+      $user = Auth::user();
+        dd($user);
         $this->validate($request, [
-            'title' => 'required'
+           'title' => 'required'
         ]);
-
-        $film = $this->omdbService->find($request->title);
-        if (empty($film)) {
-            return response()->json(
-                [
-                    'message' => 'film not found'
-                ]
-            );
+        $title = $request->title;
+        $filmEntity = $this->filmRepository->findFilmByTitle($title);
+        if (!$filmEntity) {
+            $film = $this->omdbService->find($title);
+            if (empty($film) || (isset($film['Error']))) {
+                return response()->json(
+                    [
+                        'message' => 'film not found'
+                    ]
+                );
+            }
+            $result = $this->filmRepository->addFilm($film);
+        } else {
+            unset($filmEntity->id);
+            unset($filmEntity->created_at);
+            unset($filmEntity->updated_at);
+            $result = $filmEntity;
         }
-
-        return response()->json($film);
+        return response()->json($result);
     }
 }
